@@ -35,4 +35,13 @@ app.get('/tierlist', (req, res) => {
     res.send(fake_tierlist);
 });
 
+app.get('/tierlist/items', (req, res) => {
+    let items = [];
+    Object.keys(fake_tierlist).forEach(key => {
+        items = items.concat(fake_tierlist[key]);
+    });
+    console.log(`items to send: ${items}`)
+    res.send(items);
+});
+
 app.listen(5000);
