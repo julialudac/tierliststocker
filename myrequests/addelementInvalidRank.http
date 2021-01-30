@@ -1,0 +1,7 @@
+POST http://localhost:5000/tierlist/add
+Content-Type: application/json
+
+{ 
+    "rank": "G", 
+    "item": "Toucher l Thomas" 
+} 
