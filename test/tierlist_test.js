@@ -106,7 +106,7 @@ describe('Delete', () => {
         tierlist.delete('Caca au pot');
         assert.deepStrictEqual(expectedResult, tierlist.get());
     });
-    it('Delete inexisting Marcher sur un nuage', () => {
+    it('Delete inexisting Marcher sur un nuage throw warning', () => {
         let tierlist = new Tierlist({
             'S': [],
             'A': [],
@@ -125,8 +125,7 @@ describe('Delete', () => {
             'E': [],
             'F': []
         };
-        tierlist.delete('Marcher sur la lune');
-        assert.deepStrictEqual(expectedResult, tierlist.get());
+        expect(() => {tierlist.delete('Marcher sur la lune')}).toThrow('Inexisting item Marcher sur la lune has not been deleted.');
     });
 });
 

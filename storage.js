@@ -51,6 +51,9 @@ class Storage {
     getTierListItems() {
         return this.tierlist.getItems();
     }
+    delete(item) {
+        this.tierlist.delete(item);
+    }
 }
 
 

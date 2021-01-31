@@ -71,13 +71,11 @@ class Tierlist {
             throw new Warning(`Item ${item} already existing as a ${potentialRank}-tier => Not doing anything.`);
     }
     delete(item) {
-        for (const items of Object.values(this.content)) {
-            const index = items.indexOf(item);
-            if (index != -1) {
-                items.splice(index, 1);
-                return;
-            }
-        }
+        const potentialRank = this._rank(item);
+        if (potentialRank == null)
+            throw new Warning(`Inexisting item ${item} has not been deleted.`);
+        const index = this.content[potentialRank].indexOf(item);
+        this.content[potentialRank].splice(index, 1);
     }
     move(item, newRank) {
         if (this._rank(item) != null) {
@@ -88,5 +86,3 @@ class Tierlist {
 }
 
 module.exports = Tierlist;
-exports.InvalidRankError = InvalidRankError;
-exports.Warning = Warning;
