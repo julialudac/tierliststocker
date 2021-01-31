@@ -2,6 +2,14 @@
 class InvalidRankError extends Error {
     constructor(rank) {
         super(`Invalid rank ${rank}.`);
+        this.type = 'error';
+    }
+}
+
+class Warning extends Error {
+    constructor(message) {
+        super(message);
+        this.type = 'warning';
     }
 }
 
@@ -23,12 +31,12 @@ class Tierlist {
             'F': [],
         }
     }
-    _contains(item) {
-        for (const items of Object.values(this.content)) {
-            if (items.indexOf(item) != -1)
-                return true;
+    _rank(item) {
+        for (const rank of Object.keys(this.content)) {
+            if (this.content[rank].indexOf(item) != -1)
+                return rank;
         }
-        return false;
+        return null;
     }
     get() {
         return this.content;
@@ -56,8 +64,11 @@ class Tierlist {
     add(item, rank) {
         if (!(rank in this.content)) 
             throw new InvalidRankError(rank);
-        if (!this._contains(item))
+        const potentialRank = this._rank(item);
+        if (!potentialRank)
             this.content[rank].push(item);
+        else
+            throw new Warning(`Item ${item} already existing as a ${potentialRank}-tier => Not doing anything.`);
     }
     delete(item) {
         for (const items of Object.values(this.content)) {
@@ -69,7 +80,7 @@ class Tierlist {
         }
     }
     move(item, newRank) {
-        if (this._contains(item)) {
+        if (this._rank(item) != null) {
             this.delete(item);
             this.add(item, newRank);
         }
@@ -77,3 +88,5 @@ class Tierlist {
 }
 
 module.exports = Tierlist;
+exports.InvalidRankError = InvalidRankError;
+exports.Warning = Warning;

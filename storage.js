@@ -43,12 +43,7 @@ class Storage {
         }
     }
     add(itemWithRank) {
-        const rank = itemWithRank.rank;
         this.tierlist.add(itemWithRank.item, itemWithRank.rank);
-        // TODO: handle all the possible bad cases: 
-        // - reject the request if the item already exists in the db.
-        // - reject the request that doesnt have rank and item
-        // ...
     }
     getTierList() {
         return this.tierlist;

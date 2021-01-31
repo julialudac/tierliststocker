@@ -56,7 +56,7 @@ describe('Add', () => {
         tierlist.add('Toucher la chose molle', 'A');
         assert.deepStrictEqual(expectedResult, tierlist.get());
     });
-    it('Do not add item already present', () => {
+    it('Throw warning when adding item already present', () => {
         let tierlist = new Tierlist({
             'S': [],
             'A': [],
@@ -66,17 +66,8 @@ describe('Add', () => {
             'E': [],
             'F': []
         });
-        const expectedResult = {
-            'S': [],
-            'A': [],
-            'B': [],
-            'C': [],
-            'D': ['Caca au pot'],
-            'E': [],
-            'F': []
-        };
-        tierlist.add('Caca au pot', 'A');
-        assert.deepStrictEqual(expectedResult, tierlist.get());
+        expect(() => {tierlist.add('Caca au pot', 'A')}).
+            toThrow('Item Caca au pot already existing as a D-tier => Not doing anything.');
     });
     it('Throw error when adding item in non existing rank', () => {
         const tierlist = new Tierlist({
