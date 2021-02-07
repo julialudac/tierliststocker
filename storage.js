@@ -3,56 +3,53 @@ const path = require('path');
 
 const Tierlist = require('./tierlist');
 
-// false db
-const fake_tierlist = {
-    'S': [],
-    'A': [],
-    'B': [],
-    'C': [],
-    'D': ['Caca au pot'],
-    'E': [],
-    'F': [],
-};
-
-const pathToData = path.join('data', 'tierlist.json');
-
 class Storage {
-    constructor() {
-        // thanks to the state variable, no need to always load from Db... 
-        // Assuming the programing is the only one to affect the DB, and 
-        // there is no other running instance of it...
-        // better put sync all those init things!
-        // TODO get rid of that in the future
-        
-        // fill tierlist
+    constructor(tierlist_name) {
+        this.__initPathToData(tierlist_name);
+        this.__initTierList(tierlist_name);
+    }
+    __initPathToData(tierlist_name) {
+        if (!tierlist_name)
+                tierlist_name = 'tierlist';
+        this.pathToData = path.join('data', tierlist_name + '.json');
         try {
             fs.mkdirSync('data');
-            this.tierlist = new Tierlist(fake_tierlist);
         } catch {
-            console.error('File data already exist => no need to create it.');
+            console.error('Folder data already exist => no need to create it.');
         }
+    }
+    __initTierList(tierlist_name) {
+        // Init empty tierlist or fill tierlist
         try {
-            fs.statSync(pathToData);
-            this.tierlist = new Tierlist(require('./data/tierlist.json'));
+            fs.statSync(this.pathToData );
+            this.tierlist = new Tierlist(require(`./data/${tierlist_name}.json`));
         } catch(err) {
-            if(err.code == 'ENOENT') {
-                fs.writeFile(pathToData, JSON.stringify(fake_tierlist, null, 4), err => {
-                    if (err) throw err;
-                });
-            }
+            this.tierlist = new Tierlist();
+            fs.writeFile(this.pathToData , JSON.stringify(this.tierlist.content, null, 4), err => {
+                if (err) {
+                    console.log(`Error while trying to write to ${this.pathToData }: ${err}`);
+                    throw err;
+                } 
+            });
         }
     }
     add(itemWithRank) {
         this.tierlist.add(itemWithRank.item, itemWithRank.rank);
+        fs.writeFile(this.pathToData , JSON.stringify(this.tierlist.content, null, 4), err => {
+            if (err) throw err;
+        });
     }
     getTierList() {
-        return this.tierlist;
+        return this.tierlist.get();
     }
     getTierListItems() {
         return this.tierlist.getItems();
     }
     delete(item) {
         this.tierlist.delete(item);
+        fs.writeFile(this.pathToData , JSON.stringify(this.tierlist.content, null, 4), err => {
+            if (err) throw err;
+        });
     }
 }
 

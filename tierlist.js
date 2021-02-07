@@ -18,7 +18,7 @@ class Tierlist {
         if(content==null)
             this._emptyInit();
         else
-            this.content = content;
+            this.content = {...content};
     }
     _emptyInit() {
         this.content = {

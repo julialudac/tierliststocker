@@ -25,7 +25,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \r\n    \"rank\": \"F\", \r\n    \"item\": \"Paperwork\" \r\n} ",
+					"raw": "{ \r\n    \"rank\": \"F\", \r\n    \"item\": \"Paperwork\",\r\n    \"tierlist_name\": \"apitest_data\"\r\n} ",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -66,7 +66,7 @@
 							"\r",
 							"pm.test(\"Body test\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.eql({\"warning\": \"Item Caca au pot already existing as a D-tier => Not doing anything.\"});\r",
+							"    pm.expect(jsonData).to.eql({\"warning\": \"Item Paperwork already existing as a F-tier => Not doing anything.\"});\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -78,7 +78,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \r\n    \"rank\": \"D\", \r\n    \"item\": \"Caca au pot\" \r\n} ",
+					"raw": "{ \r\n    \"rank\": \"F\", \r\n    \"item\": \"Paperwork\",\r\n    \"tierlist_name\": \"apitest_data\"\r\n} ",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -101,6 +101,52 @@
 							"key": "",
 							"value": null
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get tier list after adding Paperwork to F",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test body\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    console.info(`POPO: ${JSON.stringify(jsonData)}`)\r",
+							"    console.info(`POPO: ${JSON.stringify(jsonData.value)}`)\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"        \"S\": [],\r",
+							"        \"A\": [],\r",
+							"        \"B\": [],\r",
+							"        \"C\": [],\r",
+							"        \"D\": [],\r",
+							"        \"E\": [],\r",
+							"        \"F\": [\r",
+							"            \"Paperwork\"\r",
+							"        ]\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/tierlist/apitest_data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"tierlist",
+						"apitest_data"
 					]
 				}
 			},
@@ -131,7 +177,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \r\n    \"rank\": \"X\", \r\n    \"item\": \"Manger\" \r\n} ",
+					"raw": "{ \r\n    \"rank\": \"X\", \r\n    \"item\": \"Manger\",\r\n    \"tierlist_name\": \"apitest_data\"\r\n} ",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -191,7 +237,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/tierlist/del/Paperwork",
+					"raw": "http://localhost:5000/tierlist/del/apitest_data/Paperwork",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -200,6 +246,7 @@
 					"path": [
 						"tierlist",
 						"del",
+						"apitest_data",
 						"Paperwork"
 					]
 				}
@@ -229,7 +276,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/tierlist/del/Pepiner",
+					"raw": "http://localhost:5000/tierlist/del/apitest_data/Pepiner",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -238,6 +285,7 @@
 					"path": [
 						"tierlist",
 						"del",
+						"apitest_data",
 						"Pepiner"
 					]
 				}
