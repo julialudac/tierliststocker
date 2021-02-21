@@ -152,7 +152,7 @@ describe('Move', () => {
         tierlist.move('Caca au pot', 'F');
         assert.deepStrictEqual(expectedResult, tierlist.get());
     });
-    it('Donot move inexisting Marcher sur un nuage', () => {
+    it('Do not move inexisting Marcher sur un nuage', () => {
         let tierlist = new Tierlist({
             'S': [],
             'A': [],

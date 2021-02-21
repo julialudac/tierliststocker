@@ -5,14 +5,14 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "eslint": "^7.18.0",
-    "express": "^4.17.1",
-    "newman": "^5.2.2",
-    "nodemon": "^2.0.7"
+    "mocha": "^8.2.1",
+    "newman": "^5.2.2"
   },
   "devDependencies": {
     "expect": "^26.6.2",
-    "mocha": "^8.2.1"
+    "eslint": "^7.18.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7"
   },
   "scripts": {
     "test":"mocha && newman run api_test/tierlist_nrt.postman_collection.json"
