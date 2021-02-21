@@ -21,7 +21,7 @@ class TierlistTable(grid.Grid):
         tierlist = self.get_tier_list()
         ranks = ["S", "A", "B", "C", "D", "E", "F"]
         for k, v in tierlist.items():
-            self.SetCellValue(ranks.index(k), 0, str(v))
+            self.SetCellValue(ranks.index(k), 0, ", ".join(v))
 
     def get_tier_list(self):
         url = "http://localhost:5000/tierlist/tierlist"
