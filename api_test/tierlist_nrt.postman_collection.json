@@ -1,0 +1,296 @@
+{
+	"info": {
+		"_postman_id": "32020cc0-19f6-41d0-9e72-58a6419a6cd4",
+		"name": "tierlist_nrt",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add element",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"rank\": \"F\", \r\n    \"item\": \"Paperwork\",\r\n    \"tierlist_name\": \"apitest_data\"\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/tierlist/add?",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"tierlist",
+						"add"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add element already existing",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body test\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\"warning\": \"Item Paperwork already existing as a F-tier => Not doing anything.\"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"rank\": \"F\", \r\n    \"item\": \"Paperwork\",\r\n    \"tierlist_name\": \"apitest_data\"\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/tierlist/add?",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"tierlist",
+						"add"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get tier list after adding Paperwork to F",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test body\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    console.info(`POPO: ${JSON.stringify(jsonData)}`)\r",
+							"    console.info(`POPO: ${JSON.stringify(jsonData.value)}`)\r",
+							"    pm.expect(jsonData).to.eql({\r",
+							"        \"S\": [],\r",
+							"        \"A\": [],\r",
+							"        \"B\": [],\r",
+							"        \"C\": [],\r",
+							"        \"D\": [],\r",
+							"        \"E\": [],\r",
+							"        \"F\": [\r",
+							"            \"Paperwork\"\r",
+							"        ]\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/tierlist/apitest_data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"tierlist",
+						"apitest_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add element to invalid rank",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body test\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql({\"error\": \"Invalid rank X.\"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"rank\": \"X\", \r\n    \"item\": \"Manger\",\r\n    \"tierlist_name\": \"apitest_data\"\r\n} ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/tierlist/add?",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"tierlist",
+						"add"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete existing item Paperwork",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body test\", function () {\r",
+							"    pm.response.to.have.body(\"Item Paperwork has been successfully deleted.\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/tierlist/del/apitest_data/Paperwork",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"tierlist",
+						"del",
+						"apitest_data",
+						"Paperwork"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete inexisting item Pepiner",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status test\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body test\", function () {\r",
+							"    pm.response.to.have.body({\"warning\": \"Inexisting item Pepiner has not been deleted.\"});\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/tierlist/del/apitest_data/Pepiner",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"tierlist",
+						"del",
+						"apitest_data",
+						"Pepiner"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
