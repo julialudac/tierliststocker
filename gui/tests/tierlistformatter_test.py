@@ -2,7 +2,7 @@ from mock import patch
 from tierlistformatter import TierlistFormatter
 
 
-@patch.object(TierlistFormatter, 'load_tier_list')
+@patch('tierlist_manipulator.TierlistManipulator.load_tier_list')
 def test_fill(mocked_function):
     mocked_function.return_value = {
         'S': [],
