@@ -48,7 +48,6 @@ class MainSupport(wx.Frame):
         back_button = wx.Button(self, 4, "Back to Menu", pos=(650, 200))
         back_button.Bind(wx.EVT_BUTTON, self.__display_menu_page__)
 
-    # TODO
     def __draw_add_item_widgets__(self):
         wx.StaticText(self, label="Name of the item to add:", pos=(10, 0))
         entered_item_field = wx.TextCtrl(self, 5, "", (10, 30))
