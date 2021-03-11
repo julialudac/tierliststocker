@@ -3,14 +3,16 @@ import wx
 from tierlistformatter import TierlistFormatter
 from tierlist_manipulator import TierlistManipulator
 
+# TODO julia make an enum of the button or text titles
 
 class MainSupport(wx.Frame):
     def __init__(self):
         super().__init__(None, title="Tierlist", size=(800, 300))
-        self.__draw_menu__()
         self.selected_item = None
         self.selected_tier = None
         self.tierlist_manipulator = TierlistManipulator("tierlist")
+        self.tierlist_selected_text = None
+        self.__draw_menu__()
 
     def __display_menu_page__(self, event):
         self.__draw_menu__()
@@ -30,6 +32,14 @@ class MainSupport(wx.Frame):
         self.__draw_add_item_widgets__()
         self.__draw_back_to_menu__()
 
+    def __ask_new_tierlist__(self, event):
+        dialog = wx.TextEntryDialog(self, "Please enter the name of the tierlist to switch to:", "New tierlist")
+        dialog.ShowModal()
+        user_input = dialog.GetValue()
+        if user_input != "":
+            self.tierlist_manipulator.switch_tierlist(user_input)
+        self.tierlist_selected_text.SetLabel("Tierlist selected: " + self.tierlist_manipulator.tierlist_name)
+
     def __draw_menu__(self):
         self.__clear__()
         read_tierlist_button = wx.Button(self, 1, "Get tierlist", pos=(100, 100))
@@ -38,9 +48,14 @@ class MainSupport(wx.Frame):
         add_item_button.Bind(wx.EVT_BUTTON, self.__display_add_item_page__)
         remove_item_button = wx.Button(self, 3, "Remove item", pos=(100, 150))
         remove_item_button.Bind(wx.EVT_BUTTON, self.__display_remove_item_page__)
+        self.tierlist_selected_text = wx.StaticText(self, label="Tierlist selected: "
+                                                                + self.tierlist_manipulator.tierlist_name,
+                                         pos=(200, 20))
+        switch_tierlist_button = wx.Button(self, 10, "Switch tierlist", pos=(200, 40))
+        switch_tierlist_button.Bind(wx.EVT_BUTTON, self.__ask_new_tierlist__)
 
     def __draw_tierlist_table__(self):
-        tierlist_formatter = TierlistFormatter()
+        tierlist_formatter = TierlistFormatter(self.tierlist_manipulator.tierlist_name)
         for ind, tier_items in enumerate(tierlist_formatter.tier_items_list):
             wx.StaticText(self, label=tier_items, pos=(10, 10 + ind * 25))
 

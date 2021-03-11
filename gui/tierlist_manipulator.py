@@ -29,3 +29,6 @@ class TierlistManipulator:
         url = "http://localhost:5000/tierlist/del/{}/{}".format(self.tierlist_name, item)
         response = requests.delete(url)
         print("Delete operation status:", response.status_code)
+
+    def switch_tierlist(self, new_tierlist_name):
+        self.tierlist_name = new_tierlist_name

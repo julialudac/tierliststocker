@@ -22,6 +22,6 @@ def test_fill(mocked_function):
         'E: ',
         'F: '
     ]
-    tierlist_formatter = TierlistFormatter()
+    tierlist_formatter = TierlistFormatter("whatever")
     assert tierlist_formatter.tier_items_list == expected
 
