@@ -5,6 +5,9 @@ from tierlist_manipulator import TierlistManipulator
 
 # TODO julia make an enum of the button or text titles
 
+RESPONSE_POS = (200, 100)
+
+
 class MainSupport(wx.Frame):
     def __init__(self):
         super().__init__(None, title="Tierlist", size=(800, 300))
@@ -55,9 +58,12 @@ class MainSupport(wx.Frame):
         switch_tierlist_button.Bind(wx.EVT_BUTTON, self.__ask_new_tierlist__)
 
     def __draw_tierlist_table__(self):
+        try:
         tierlist_formatter = TierlistFormatter(self.tierlist_manipulator.tierlist_name)
         for ind, tier_items in enumerate(tierlist_formatter.tier_items_list):
             wx.StaticText(self, label=tier_items, pos=(10, 10 + ind * 25))
+        except Exception as e:
+            wx.StaticText(self, label=str(e), pos=(10, 10))
 
     def __draw_back_to_menu__(self):
         back_button = wx.Button(self, 4, "Back to Menu", pos=(650, 200))
@@ -74,12 +80,15 @@ class MainSupport(wx.Frame):
         add_item_button.Bind(wx.EVT_BUTTON, self.__add_item_to_tierlist__)
 
     def __draw_remove_item_field__(self):
+        try:
         wx.StaticText(self, label="Please select item to remove:", pos=(0, 0))
         choices = self.tierlist_manipulator.get_all_items()
         delete_selection = wx.ListBox(self, size=(100, -1), pos=(0, 20), choices=choices)
         delete_selection.Bind(wx.EVT_LISTBOX, self.__update_selected_item__)
         remove_button = wx.Button(self, 2, "Remove!", pos=(120, 150))
         remove_button.Bind(wx.EVT_BUTTON, self.__remove__tierlist__item)
+        except Exception as e:
+            wx.StaticText(self, label="An error occured. Please try later. Error: " + str(e), pos=RESPONSE_POS)
 
     def __update_selected_item__(self, event):
         # Case when we select the item (during delete action)
@@ -93,13 +102,26 @@ class MainSupport(wx.Frame):
 
     def __add_item_to_tierlist__(self, event):
         print("Item to be added:", self.selected_item, "and selected rank:", self.selected_tier)
+        try:
         self.tierlist_manipulator.add(self.selected_item,
                                       self.selected_tier)
+            wx.StaticText(self, label="Item '{}' successfully added as a {}-tier!"
+                                      .format(self.selected_item, self.selected_tier),
+                          pos=RESPONSE_POS)
+        except Exception as e:
+            wx.StaticText(self, label=str(e), pos=RESPONSE_POS)
 
     def __remove__tierlist__item(self, event):
         if self.selected_item:
-            print(self.selected_item, "deleted!!!")
+            try:
             self.tierlist_manipulator.remove(self.selected_item)
+                wx.StaticText(self, label="Item '{}' successfully deleted!"
+                              .format(self.selected_item),
+                              pos=RESPONSE_POS)
+            except Exception as e:
+                wx.StaticText(self, label=str(e), pos=RESPONSE_POS)
+        else:
+            wx.StaticText(self, label="Please select an item!", pos=RESPONSE_POS)
         choices = self.tierlist_manipulator.get_all_items()
         listbox = self.GetChildren()[1]
         listbox.Set(choices)
