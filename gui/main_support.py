@@ -13,7 +13,6 @@ class MainSupport(wx.Frame):
     def __init__(self):
         super().__init__(None, title="Tierlist", size=(800, 300))
         self.selected_item = None
-        self.selected_tier = None
         self.tierlist_manipulator = TierlistManipulator("tierlist")
         self.tierlist_selected_text = None
         self.widget_name_and_id = {
@@ -35,13 +34,10 @@ class MainSupport(wx.Frame):
         self.__draw_back_to_menu__()
 
     def __display_remove_item_page__(self, event):
-        self.__clear__()
-        self.__draw_remove_item_field__()
-        self.__draw_back_to_menu__()
+        pages.RemoveItemPage(self).draw()
 
     def __display_add_item_page__(self, event):
-        add_page = pages.AddItemPage(self)
-        add_page.draw()
+        pages.AddItemPage(self).draw()
 
     def __ask_new_tierlist__(self, event):
         dialog = wx.TextEntryDialog(self, "Please enter the name of the tierlist to switch to:", "New tierlist")
@@ -80,40 +76,6 @@ class MainSupport(wx.Frame):
     def __draw_back_to_menu__(self):
         back_button = wx.Button(self, self.widget_name_and_id["Back to Menu"], "Back to Menu", pos=(650, 200))
         back_button.Bind(wx.EVT_BUTTON, self.__display_menu_page__)
-
-    def __draw_remove_item_field__(self):
-        try:
-            wx.StaticText(self, label="Please select item to remove:", pos=(0, 0))
-            choices = self.tierlist_manipulator.get_all_items()
-            delete_selection = wx.ListBox(self, size=(100, -1), pos=(0, wc.LINE_HEIGHT), choices=choices)
-            delete_selection.Bind(wx.EVT_LISTBOX, self.__update_selected_item__)
-            remove_button = wx.Button(self, self.widget_name_and_id["Remove!"], "Remove!",
-                                      pos=(wc.CLASSIC_COORDINATE_VALUE + wc.LINE_HEIGHT,
-                                           wc.CLASSIC_COORDINATE_VALUE + 2*wc.LINE_HEIGHT))
-            remove_button.Bind(wx.EVT_BUTTON, self.__remove__tierlist__item)
-        except Exception as e:
-            wx.StaticText(self, label="An error occured. Please try later. Error: " + str(e), pos=wc.RESPONSE_POS)
-
-    def __update_selected_item__(self, event):
-        self.selected_item = event.GetEventObject().GetStringSelection()
-
-    def __update_selected_rank(self, event):
-        self.selected_tier = event.GetEventObject().GetStringSelection()
-
-    def __remove__tierlist__item(self, event):
-        if self.selected_item:
-            try:
-                self.tierlist_manipulator.remove(self.selected_item)
-                wx.StaticText(self, label="Item '{}' successfully deleted!"
-                              .format(self.selected_item),
-                              pos=wc.RESPONSE_POS)
-            except Exception as e:
-                wx.StaticText(self, label=str(e), pos=wc.RESPONSE_POS)
-        else:
-            wx.StaticText(self, label="Please select an item!", pos=wc.RESPONSE_POS)
-        choices = self.tierlist_manipulator.get_all_items()
-        listbox = self.GetChildren()[1]
-        listbox.Set(choices)
 
     def __clear__(self):
         for child in self.GetChildren():
