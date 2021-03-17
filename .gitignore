@@ -2,3 +2,8 @@ node_modules/
 data/
 package-lock.json
 yarn.lock
+gui/.idea/
+gui/**/.pytest_cache/
+gui/latex
+gui/html
+**/*cpython*
