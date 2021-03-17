@@ -1,5 +1,5 @@
 import wx
-from main_support import FrameAndItsStates
+from frame_and_states import FrameAndItsStates
 
 app = wx.App()
 frame = FrameAndItsStates()
