@@ -1,6 +1,8 @@
 import wx
 import widget_constants as wc
 
+from tierlistformatter import TierlistFormatter
+
 
 class ActionPage:
     def __init__(self, panel):
@@ -91,4 +93,15 @@ class RemoveItemPage(ActionPage):
         choices = self.panel.tierlist_manipulator.get_all_items()
         listbox = self.panel.GetChildren()[2]  # 2 means the listbox which is the 3rd child
         listbox.Set(choices)
+
+
+class DisplayTierlistPage(ActionPage):
+    def draw(self):
+        super().draw()
+        try:
+            tierlist_formatter = TierlistFormatter(self.panel.tierlist_manipulator.tierlist_name)
+            for ind, tier_items in enumerate(tierlist_formatter.tier_items_list):
+                wx.StaticText(self.panel, label=tier_items, pos=(10, 10 + ind * wc.LINE_HEIGHT))
+        except Exception as e:
+            wx.StaticText(self.panel, label=str(e), pos=(10, 10))
 

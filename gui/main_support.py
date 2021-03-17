@@ -1,6 +1,5 @@
 import wx
 
-from tierlistformatter import TierlistFormatter
 from tierlist_manipulator import TierlistManipulator
 
 # TODO julia regroup well the classes
@@ -29,9 +28,7 @@ class MainSupport(wx.Frame):
         self.__draw_menu__()
 
     def __display_tierlist_page__(self, event):
-        self.__clear__()
-        self.__draw_tierlist_table__()
-        self.__draw_back_to_menu__()
+        pages.DisplayTierlistPage(self).draw()
 
     def __display_remove_item_page__(self, event):
         pages.RemoveItemPage(self).draw()
@@ -64,18 +61,6 @@ class MainSupport(wx.Frame):
                                          pos=(200, wc.LINE_HEIGHT))
         switch_tierlist_button = wx.Button(self, 10, "Switch tierlist", pos=(200, 2*wc.LINE_HEIGHT))
         switch_tierlist_button.Bind(wx.EVT_BUTTON, self.__ask_new_tierlist__)
-
-    def __draw_tierlist_table__(self):
-        try:
-            tierlist_formatter = TierlistFormatter(self.tierlist_manipulator.tierlist_name)
-            for ind, tier_items in enumerate(tierlist_formatter.tier_items_list):
-                wx.StaticText(self, label=tier_items, pos=(10, 10 + ind * wc.LINE_HEIGHT))
-        except Exception as e:
-            wx.StaticText(self, label=str(e), pos=(10, 10))
-
-    def __draw_back_to_menu__(self):
-        back_button = wx.Button(self, self.widget_name_and_id["Back to Menu"], "Back to Menu", pos=(650, 200))
-        back_button.Bind(wx.EVT_BUTTON, self.__display_menu_page__)
 
     def __clear__(self):
         for child in self.GetChildren():
