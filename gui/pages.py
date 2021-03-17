@@ -18,7 +18,10 @@ class ActionPage:
 
     def __draw_back_to_menu__(self):
         back_button = wx.Button(self.panel, wc.widget_name_and_id["Back to Menu"], "Back to Menu", pos=(650, 200))
-        back_button.Bind(wx.EVT_BUTTON, self.panel.__display_menu_page__)
+        back_button.Bind(wx.EVT_BUTTON, self.__display_menu_page__)
+
+    def __display_menu_page__(self, event):
+        MenuPage(self.panel).draw()
 
 
 class AddItemPage(ActionPage):
