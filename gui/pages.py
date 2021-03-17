@@ -105,3 +105,48 @@ class DisplayTierlistPage(ActionPage):
         except Exception as e:
             wx.StaticText(self.panel, label=str(e), pos=(10, 10))
 
+
+class MenuPage:
+    def __init__(self, panel):
+        self.panel = panel
+
+    def draw(self):
+        self.__clear__()
+        read_tierlist_button = wx.Button(self.panel, wc.widget_name_and_id["Get tierlist"],
+                                         "Get tierlist", pos=(wc.CLASSIC_COORDINATE_VALUE, wc.CLASSIC_COORDINATE_VALUE))
+        read_tierlist_button.Bind(wx.EVT_BUTTON, self.__display_tierlist_page__)
+        add_item_button = wx.Button(self.panel, wc.widget_name_and_id["Add item to tier"],
+                                    "Add item to tier", pos=(wc.CLASSIC_COORDINATE_VALUE, wc.CLASSIC_COORDINATE_VALUE +
+                                                             wc.LINE_HEIGHT))
+        add_item_button.Bind(wx.EVT_BUTTON, self.__display_add_item_page__)
+        remove_item_button = wx.Button(self.panel, wc.widget_name_and_id["Remove item"], "Remove item",
+                                       pos=(
+                                       wc.CLASSIC_COORDINATE_VALUE, wc.CLASSIC_COORDINATE_VALUE + 2 * wc.LINE_HEIGHT))
+        remove_item_button.Bind(wx.EVT_BUTTON, self.__display_remove_item_page__)
+        self.tierlist_selected_text = wx.StaticText(self.panel, label="Tierlist selected: "
+                                                                + self.panel.tierlist_manipulator.tierlist_name,
+                                                    pos=(200, wc.LINE_HEIGHT))
+        switch_tierlist_button = wx.Button(self.panel, 10, "Switch tierlist", pos=(200, 2 * wc.LINE_HEIGHT))
+        switch_tierlist_button.Bind(wx.EVT_BUTTON, self.__ask_new_tierlist__)
+
+    def __ask_new_tierlist__(self, event):
+        dialog = wx.TextEntryDialog(self.panel, "Please enter the name of the tierlist to switch to:", "New tierlist")
+        dialog.ShowModal()
+        user_input = dialog.GetValue()
+        if user_input != "":
+            self.panel.tierlist_manipulator.switch_tierlist(user_input)
+        self.tierlist_selected_text.SetLabel("Tierlist selected: " + self.panel.tierlist_manipulator.tierlist_name)
+
+    def __clear__(self):
+        for child in self.panel.GetChildren():
+            child.Destroy()
+
+    def __display_tierlist_page__(self, event):
+        DisplayTierlistPage(self.panel).draw()
+
+    def __display_add_item_page__(self, event):
+        AddItemPage(self.panel).draw()
+
+    def __display_remove_item_page__(self, event):
+        RemoveItemPage(self.panel).draw()
+

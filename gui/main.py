@@ -1,8 +1,8 @@
 import wx
-from main_support import MainSupport
+from main_support import FrameAndItsStates
 
 app = wx.App()
-frame = MainSupport()
+frame = FrameAndItsStates()
 frame.Show()
 app.MainLoop()
 
