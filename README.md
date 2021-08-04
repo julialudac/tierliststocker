@@ -6,6 +6,10 @@ I chose to make this personal project so I can practice my coding skills and onl
 
 ## Starting the (BE) service
 The program has been written in Javascript, and you need it to 
+
+## Using FE Web
+The project is located into *frontend* directory. It has its own README. It works independently from the rest, including the BE I have coded!!
+
 ## Using the FE GUI
 The program is located into *gui* folder and the file to be run is *main.py*. 
 As it is a python program, you need python installed on your computer to run it.
