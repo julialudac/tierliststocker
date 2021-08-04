@@ -1,9 +1,9 @@
 <template>
-  <td @dblclick="toggleAddMode">
-    <button v-for="(el, index) in elements" :key="index">
-      {{ el }} | x
+  <td @dblclick="toggleAddModeByClick">
+    <button v-for="(el, index) in elements" :key="index" @click="askDeleteElement">
+      {{ el }} | <span>x</span> 
     </button>
-    <span v-show="addMode"><input type="text" /><button class="ok">Ok!</button></span>
+    <span v-show="addMode"><input type="text" v-model="inputVal"><button class="ok" @click="submitNewItem">Ok!</button></span>
   </td>
 </template>
 
@@ -15,13 +15,32 @@ export default {
   },
   data() {
     return {
-      addMode: false
+      addMode: Boolean,
+      inputVal: String
     }
   },
+  created() {
+    this.addMode = false;
+    this.inputVal = '';
+  },
   methods: {
-    toggleAddMode(event) {
+    toggleAddModeByClick(event) {
       if (event.target.__vnode.type == 'td') {
         this.addMode=!this.addMode;
+      }
+    },
+    submitNewItem() {
+      this.$emit('new-item-submitted', this.inputVal);
+      this.addMode=!this.addMode;
+      this.inputVal = '';
+    },
+    askDeleteElement(event) {
+      if (event.target.__vnode.type == 'span') {
+        let item = event.target.parentNode.textContent;
+        item = item.substring(0, item.length-4);
+        if (confirm(`Are you sure you want to delete item "${item}"?`)) {
+          this.$emit('delete-item', item);
+        } 
       }
     }
   }
