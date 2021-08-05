@@ -1,7 +1,12 @@
 <template>
   <div>
     <h1>This is your tierlist table</h1>
-    <TierlistTable/>
+    <p>Switch tierlist: 
+      <select name="tierlist" id="" v-model="selectedName">
+        <option v-for="(name, index) in tierlistNames" :key="index" :value="name">{{name}}</option>
+      </select>
+    </p>
+    <TierlistTable :tierlistName="selectedName"/>
   </div>
 </template>
 
@@ -10,9 +15,26 @@ import TierlistTable from './components/TierlistTable.vue'
 
 export default {
   name: 'App',
+  data() {
+    return {
+      tierlistNames: [],
+      selectedName: ""
+    }
+  },
   components: {
     // HelloWorld
     TierlistTable
+  },
+  async created() {
+    const tierlists = await this.fetchTierlists();
+    this.tierlistNames = tierlists.map(tierlist => tierlist.name);
+    this.selectedName = this.tierlistNames[0];
+  },
+  methods: {
+    async fetchTierlists() {
+      const res = await fetch('http://localhost:3000/tierlists');
+      return res.json();
+    },
   }
 }
 </script>

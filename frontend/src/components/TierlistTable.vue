@@ -1,5 +1,6 @@
 <template>
-  <table>
+  <div>
+    <table v-show="elementRanks.length > 0">
     <tbody>
       <TierlistRow v-for="(tierAndElements, rIndex) in elementRanks" 
                   :key="rIndex" 
@@ -9,6 +10,8 @@
       />
     </tbody>
   </table>
+  <p v-show="elementRanks.length == 0">Please wait. Your tierlist is coming soon...</p>
+  </div>
 </template>
 
 <script>
@@ -19,22 +22,41 @@ export default {
   components: {
     TierlistRow
   },
+  props: {
+    tierlistName: String
+  },
+  watch: {
+    tierlistName: function(newVal, oldVal) {
+      console.log(`Switch tierlist from ${oldVal} to ${newVal}`);
+      this.refresh();
+    }
+  },
   data() {
     return {
       elementRanks: []
     }
   },
-  async created() {
-    this.elementRanks = await this.getCurrentTierlistElements();
+  created() {
+    this.refresh();
   },
   methods: {
-    async fetchDBElements() {
-      const res = await fetch('http://localhost:3000/rankAndElements');
-      const dbData = await res.json();
-      return dbData;
+    async refresh() {
+      // this.tierlistName can be empty at this time, because the parent feeds a value that is not yet filled (async operations are culprit!)
+      if (this.tierlistName == '') {
+        console.log('There is no selected tierlist table. We just have to wait for the value to be loaded.');
+      } else {
+        this.elementRanks = await this.getCurrentTierlistElements();
+      }
+    },
+    async fetchTierlistFromDB() { 
+      const res = await fetch('http://localhost:3000/tierlists');
+      let tierlistsFromDB = await res.json();
+      const tierlistFromDB = tierlistsFromDB.find(val => val.name == this.tierlistName);
+      return tierlistFromDB;
     },
     async getCurrentTierlistElements() {
-      return this.dbDataToVueData(await this.fetchDBElements());
+      // remember that in the DB tierlists are stored in a list as an object with an id, a name and its actual content
+      return this.dbDataToVueData((await this.fetchTierlistFromDB()).content);
     },
     // format the fetched data so it can be v-for-ed
     dbDataToVueData(dbData) {
@@ -55,34 +77,34 @@ export default {
         }
       });
     },
-    async addNewItem(rankAndItem) {
-      console.log(`New item to be added of rank ${rankAndItem.rank}: ${rankAndItem.item}`);
-      const dbData = await this.fetchDBElements();
-      dbData[rankAndItem.rank].push(rankAndItem.item);
+    async addNewItem(itemWithRank) {
+      console.log(`New item to be added of rank ${itemWithRank.rank}: ${itemWithRank.item}`);
+      let tierlist = await this.fetchTierlistFromDB();
+      tierlist['content'][itemWithRank.rank].push(itemWithRank.item);
       try {
-        await fetch('http://localhost:3000/rankAndElements', {
+        await fetch(`http://localhost:3000/tierlists/${tierlist.id}`, {
           method: 'PUT',
           headers: {'Content-type': 'application/json'},
-          body: JSON.stringify(dbData)
+          body: JSON.stringify(tierlist)
         });
-        this.elementRanks = this.dbDataToVueData(dbData);
+        this.elementRanks = this.dbDataToVueData(tierlist.content);
       } catch(e) {
         console.log('Error adding item:', e);
       }
     },
     async deleteItem(itemWithRank) {
       console.log(`Item to delete of rank ${itemWithRank.rank}: ${itemWithRank.item}`);
-      const dbData = await this.fetchDBElements();
-      dbData[itemWithRank.rank] = dbData[itemWithRank.rank].filter(item => item != itemWithRank.item);
+      let tierlist = await this.fetchTierlistFromDB();
+      tierlist['content'][itemWithRank.rank] = tierlist['content'][itemWithRank.rank].filter(item => item != itemWithRank.item);
       try {
-        await fetch('http://localhost:3000/rankAndElements', {
+        await fetch(`http://localhost:3000/tierlists/${tierlist.id}`, {
           method: 'PUT',
           headers: {'Content-type': 'application/json'},
-          body: JSON.stringify(dbData)
+          body: JSON.stringify(tierlist)
         });
-        this.elementRanks = this.dbDataToVueData(dbData);
+        this.elementRanks = this.dbDataToVueData(tierlist.content);
       } catch(e) {
-        console.log('Error removing item:', e);
+        console.log('Error deleting item:', e);
       }
     }
   }
