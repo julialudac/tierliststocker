@@ -7,6 +7,10 @@
       </select>
     </p>
     <TierlistTable :tierlistName="selectedName"/>
+    <form @submit="addTierlist">
+      <input type="text" v-model="tierlistToAdd"/>
+      <button type="submit">New tierlist</button>
+    </form>
   </div>
 </template>
 
@@ -18,23 +22,50 @@ export default {
   data() {
     return {
       tierlistNames: [],
-      selectedName: ""
+      selectedName: '',
+      tierlistToAdd: ''
     }
   },
   components: {
     // HelloWorld
     TierlistTable
   },
-  async created() {
-    const tierlists = await this.fetchTierlists();
-    this.tierlistNames = tierlists.map(tierlist => tierlist.name);
-    this.selectedName = this.tierlistNames[0];
+  created() {
+    this.refresh();
   },
   methods: {
     async fetchTierlists() {
       const res = await fetch('http://localhost:3000/tierlists');
       return res.json();
     },
+    async refresh() {
+      const tierlists = await this.fetchTierlists();
+      this.tierlistNames = tierlists.map(tierlist => tierlist.name);
+      this.selectedName = this.tierlistNames[0];
+    },
+    addTierlist(e) {
+      e.preventDefault();
+      if (this.tierlistNames.some(name => name == this.tierlistToAdd)) {
+        alert(`Tierlist ${this.tierlistToAdd} already exits.`);
+        return;
+      }
+      try {
+          const tiers = ['S', 'A', 'B', 'C', 'D', 'E', 'F'];
+          let emptyContent = {}
+          for (let tier of tiers) {
+            emptyContent[tier] = [];
+          }
+          fetch('http://localhost:3000/tierlists', {
+            method: "POST",
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify({name: this.tierlistToAdd, content: emptyContent})
+          });
+          alert(`Successfully added new tierlist ${this.tierlistToAdd}!`);
+          this.refresh();
+      } catch(e) {
+        console.log(`Error adding new tierlist: ${e.message}`);
+      }
+    }
   }
 }
 </script>

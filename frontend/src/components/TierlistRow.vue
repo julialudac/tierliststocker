@@ -29,6 +29,9 @@ export default {
 </script>
 
 <style scoped>
+th {
+  width: 20px;
+}
 tr {
   border: 1px solid;
 }
