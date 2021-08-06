@@ -30,9 +30,13 @@ export default {
       }
     },
     submitNewItem() {
-      this.$emit('new-item-submitted', this.inputVal);
-      this.addMode=!this.addMode;
-      this.inputVal = '';
+      if (this.inputVal != '') {
+        this.$emit('new-item-submitted', this.inputVal);
+        this.addMode=!this.addMode;
+        this.inputVal = '';
+      } else {
+        alert('Please enter something!');
+      }
     },
     askDeleteElement(event) {
       if (event.target.__vnode.type == 'span') {

@@ -1,16 +1,16 @@
 <template>
   <div>
-    <table v-show="elementRanks.length > 0">
+    <table v-show="ranksAndElements.length > 0">
     <tbody>
-      <TierlistRow v-for="(tierAndElements, rIndex) in elementRanks" 
+      <TierlistRow v-for="(tierAndItsElements, rIndex) in ranksAndElements" 
                   :key="rIndex" 
-                  :tierAndElements="tierAndElements"
+                  :tierAndItsElements="tierAndItsElements"
                   @new-item-submitted="addNewItem"
                   @delete-item="deleteItem"              
       />
     </tbody>
   </table>
-  <p v-show="elementRanks.length == 0">Please wait. Your tierlist is coming soon...</p>
+  <p v-show="ranksAndElements.length == 0">Please wait. Your tierlist is coming soon...</p>
   </div>
 </template>
 
@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      elementRanks: []
+      ranksAndElements: []
     }
   },
   created() {
@@ -45,7 +45,7 @@ export default {
       if (this.tierlistName == '') {
         console.log('There is no selected tierlist table. We just have to wait for the value to be loaded.');
       } else {
-        this.elementRanks = await this.getCurrentTierlistElements();
+        this.ranksAndElements = await this.getCurrentTierlistElements();
       }
     },
     async fetchTierlistFromDB() { 
@@ -77,7 +77,19 @@ export default {
         }
       });
     },
+    getAllElements() {
+      let res = [];
+      for (const rankAndItsElements of this.ranksAndElements) {
+        res.push(rankAndItsElements.elements);
+      }
+      res = [].concat.apply([], res); 
+      return res;
+    },
     async addNewItem(itemWithRank) {
+      if (this.getAllElements().some(element => element.toLowerCase() == itemWithRank.item.toLowerCase())) {
+        alert("This element is already existing in the tierlist, so you cannot add it.");
+        return;
+      }
       console.log(`New item to be added of rank ${itemWithRank.rank}: ${itemWithRank.item}`);
       let tierlist = await this.fetchTierlistFromDB();
       tierlist['content'][itemWithRank.rank].push(itemWithRank.item);
@@ -87,7 +99,7 @@ export default {
           headers: {'Content-type': 'application/json'},
           body: JSON.stringify(tierlist)
         });
-        this.elementRanks = this.dbDataToVueData(tierlist.content);
+        this.ranksAndElements = this.dbDataToVueData(tierlist.content);
       } catch(e) {
         console.log('Error adding item:', e);
       }
@@ -102,7 +114,7 @@ export default {
           headers: {'Content-type': 'application/json'},
           body: JSON.stringify(tierlist)
         });
-        this.elementRanks = this.dbDataToVueData(tierlist.content);
+        this.ranksAndElements = this.dbDataToVueData(tierlist.content);
       } catch(e) {
         console.log('Error deleting item:', e);
       }
