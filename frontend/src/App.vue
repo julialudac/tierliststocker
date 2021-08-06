@@ -2,20 +2,23 @@
   <div>
     <h1>This is your tierlist table</h1>
     <p>Switch tierlist: 
-      <select name="tierlist" id="" v-model="selectedName">
-        <option v-for="(name, index) in tierlistNames" :key="index" :value="name">{{name}}</option>
-      </select>
+      <TierlistSelection :tierlistNames="tierlistNames" v-model="selectedName" />
     </p>
     <TierlistTable :tierlistName="selectedName"/>
     <form @submit="addTierlist">
       <input type="text" v-model="tierlistToAdd"/>
       <button type="submit">New tierlist</button>
     </form>
+    <form @submit="deleteTierlist">
+      <TierlistSelection :tierlistNames="tierlistNames" v-model="tierlistToDelete" />
+      <button type="submit">Delete tierlist (!!!)</button>
+    </form>
   </div>
 </template>
 
 <script>
 import TierlistTable from './components/TierlistTable.vue'
+import TierlistSelection from './components/TierlistSelection.vue'
 
 export default {
   name: 'App',
@@ -23,12 +26,13 @@ export default {
     return {
       tierlistNames: [],
       selectedName: '',
-      tierlistToAdd: ''
+      tierlistToAdd: '',
+      tierlistToDelete: ''
     }
   },
   components: {
-    // HelloWorld
-    TierlistTable
+    TierlistTable,
+    TierlistSelection
   },
   created() {
     this.refresh();
@@ -61,9 +65,26 @@ export default {
             body: JSON.stringify({name: this.tierlistToAdd, content: emptyContent})
           });
           alert(`Successfully added new tierlist ${this.tierlistToAdd}!`);
+          this.tierlistToAdd = '';
           this.refresh();
       } catch(e) {
         console.log(`Error adding new tierlist: ${e.message}`);
+      }
+    },
+    async deleteTierlist(e) {
+      e.preventDefault();
+      if (confirm(`Are you really sure you want to delete tierlist ${this.tierlistToDelete}?`)) {
+        try {
+          const tierlists = await this.fetchTierlists();
+          const toDelete = tierlists.find(tierlist => tierlist.name == this.tierlistToDelete);
+          fetch(`http://localhost:3000/tierlists/${toDelete.id}`, {
+            method: "DELETE",
+          });
+          alert(`Successfully deleted tierlist ${this.tierlistToDelete}!`);
+          this.refresh();
+      } catch(e) {
+        console.log(`Error deleting tierlist: ${e.message}`);
+      }
       }
     }
   }
