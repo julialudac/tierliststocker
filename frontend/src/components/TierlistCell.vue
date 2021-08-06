@@ -3,7 +3,9 @@
     <button v-for="(el, index) in elements" :key="index" @click="askDeleteElement">
       {{ el }} | <span>x</span> 
     </button>
-    <span v-show="addMode"><input type="text" v-model="inputVal"><button class="ok" @click="submitNewItem">Ok!</button></span>
+    <form @submit="submitNewItem" style="display:inline-block">
+      <span v-show="addMode"><input type="text" v-model="inputVal"/><button type='submit' class="ok">Ok!</button></span>
+    </form>
   </td>
 </template>
 
@@ -29,7 +31,8 @@ export default {
         this.addMode=!this.addMode;
       }
     },
-    submitNewItem() {
+    submitNewItem(e) {
+      e.preventDefault();
       if (this.inputVal != '') {
         this.$emit('new-item-submitted', this.inputVal);
         this.addMode=!this.addMode;
