@@ -1,0 +1,46 @@
+{
+  "tierlists": [
+    {
+      "name": "julia",
+      "content": {
+        "S": [
+          "Read books",
+          "Manger",
+          "Surf on the Internet"
+        ],
+        "A": [
+          "Watch Youtube Videos",
+          "Chat and see what's going on WhatsApp",
+          "Cycle"
+        ],
+        "B": [],
+        "C": [],
+        "D": [],
+        "E": [],
+        "F": []
+      },
+      "id": 1
+    },
+    {
+      "name": "thomas",
+      "content": {
+        "S": [
+          "Sleep",
+          "Play video games",
+          "Watch Youtube videos"
+        ],
+        "A": [],
+        "B": [],
+        "C": [
+          "Cycle"
+        ],
+        "D": [
+          "Do homework"
+        ],
+        "E": [],
+        "F": []
+      },
+      "id": 2
+    }
+  ]
+}

@@ -7,3 +7,4 @@ gui/**/.pytest_cache/
 gui/latex
 gui/html
 **/*cpython*
+gui/Doxyfile
