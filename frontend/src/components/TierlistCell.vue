@@ -55,6 +55,9 @@ export default {
 td {
   border: 1px solid;
 }
+td:hover {
+  background-color: #ddffff;
+}
 .ok {
   background-color: lightgreen;
 }
