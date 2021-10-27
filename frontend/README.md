@@ -28,7 +28,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 I realize there is no need for a handmade backend, the one provided by json-server suffices! The data are stored into db.json.
 
 ## Launching the backend
-json-server watch -- db.json
+json-server --watch db.json
 
 
 # Using the application
